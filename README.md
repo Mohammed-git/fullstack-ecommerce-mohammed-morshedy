@@ -1,4 +1,4 @@
-# Full-Stack E-Commerce Platform
+# Full-Stack E-Commerce Platform (ShopShere)
 
 A complete Full-Stack E-Commerce Platform developed as the **Capstone Project** for the **Digital Egypt Cubs Initiative (DECI)**.
 
@@ -432,11 +432,330 @@ The logs include:
 - Request entries with timestamp and severity level.
 - Error entries with timestamp and severity level.
 
-# Repository
 
-https://github.com/Mohammed-git/fullstack-ecommerce-mohammed-morshedy
 
 ---
+# ShopSphere Enterprise Production and Cloud Modernization
+
+## Digital Egypt Cubs Initiative — Level 5
+
+### Final Project Submission Package
+
+---
+
+## Project Information
+
+| Item | Details |
+|---|---|
+| **Student ID** | `30810200200418` |
+| **Project** | ShopSphere Enterprise Production and Cloud Modernization |
+| **Repository** | [GitHub Repository](https://github.com/Mohammed-git/fullstack-ecommerce-mohammed-morshedy) |
+| **Main Application** | [Production Application](https://fullstack-ecommerce-mohammed-morshe.vercel.app/) |
+| **Review Service** | [Review Microservice](https://mohammed-morshedy-shop-sphere-revie.vercel.app/) |
+| **Analytics Function** | [Serverless Analytics](https://mohammed-morshedy-shop-sphere-revie.vercel.app/api/analytics) |
+
+> This document consolidates the ShopSphere project deliverables and supporting evidence for final submission.
+
+---
+
+# Task 1 — Production Deployment
+
+## Production Deployment
+
+The ShopSphere frontend and backend were deployed to **Vercel** and connected to a production **PostgreSQL database hosted on Supabase**.
+
+## Security
+
+The deployed backend uses the following security protections:
+
+- **HTTPS**
+- **CORS**
+- **Helmet**
+- **Rate Limiting**
+
+## Production Database
+
+- **Database:** PostgreSQL
+- **Provider:** Supabase
+- **Environment:** Production
+
+The production application successfully connects to the Supabase PostgreSQL database and retrieves application data.
+
+## Health Check
+
+The backend provides a production health-check endpoint:
+
+`/health`
+
+The endpoint is used to verify backend availability and is monitored through UptimeRobot.
+
+## Testing
+
+Backend tests completed successfully:
+
+- **Test Suites:** 2 passed
+- **Tests:** 8 passed
+- **Result:** `8/8 tests passed`
+
+## Monitoring
+
+Production availability is monitored using **UptimeRobot**.
+
+The monitoring configuration checks the production health endpoint and provides uptime and availability status.
+
+---
+
+# Task 2 — Cloud Preparation
+
+## 2.1 Architecture Diagram
+
+The production architecture consists of:
+
+- User / Web Browser
+- Vercel Frontend
+- Vercel Backend / Serverless Functions
+- Supabase PostgreSQL Database
+- HTTPS/TLS communication between components
+
+The architecture diagram represents the production deployment and the traffic flow between the major system components.
+
+**Architecture Diagram File:**
+
+`EYOUTH-30810200200418-ShopSphere.png`
+
+## 2.2 Cloud Service Classification
+
+The production cloud services are classified as follows:
+
+| Service | Provider | Service Model |
+|---|---|---|
+| Frontend Hosting | Vercel | **PaaS** |
+| Backend / Serverless Hosting | Vercel | **PaaS** |
+| Production Database | Supabase PostgreSQL | **PaaS** |
+
+The reasons for each classification are documented in:
+
+`cloud-classification.md`
+
+## 2.3 Kubernetes Multi-Cloud Simulation
+
+The project includes a Kubernetes-based multi-cloud simulation defined in:
+
+`k8s-simulation.yaml`
+
+The simulation contains two isolated namespaces:
+
+### AWS Simulation
+
+Namespace:
+
+`aws-simulation`
+
+Resources:
+
+- Frontend Pod
+- Backend Pod
+- Frontend Service
+- Backend Service
+
+### GCP Simulation
+
+Namespace:
+
+`gcp-simulation`
+
+Resources:
+
+- Frontend Pod
+- Backend Pod
+- Frontend Service
+- Backend Service
+
+The pods were verified as **Running** and **Ready**, and the backend services were tested using `kubectl port-forward`.
+
+---
+
+# Task 3 — Application Modernization
+
+## 3.1 Review Service Extraction
+
+The Reviews functionality was extracted from the main monolithic backend and converted into an independently deployed **Node.js / Express microservice**.
+
+The Review Service provides dedicated review endpoints, including:
+
+- `GET /api/reviews`
+- `POST /api/reviews`
+
+The service is deployed independently and has its own production URL.
+
+**Review Microservice:**
+
+[https://mohammed-morshedy-shop-sphere-revie.vercel.app/](https://mohammed-morshedy-shop-sphere-revie.vercel.app/)
+
+## 3.2 REST Communication
+
+The main ShopSphere backend communicates with the Review Microservice through a **REST API**.
+
+The REST integration is implemented through:
+
+`backend/src/routes/review.routes.js`
+
+The main application forwards review-related requests to the independently deployed Review Service.
+
+## 3.3 Serverless Integration
+
+A Vercel Serverless Function was implemented to handle background analytics and metrics processing.
+
+**Serverless Function:**
+
+`api/analytics.js`
+
+**Production Endpoint:**
+
+[Serverless Analytics Endpoint](https://mohammed-morshedy-shop-sphere-revie.vercel.app/api/analytics)
+
+The function executes independently from the main Express application and is deployed through Vercel Serverless Functions.
+
+## 3.4 Architecture Decision Record
+
+The project's Architecture Decision Record is documented in:
+
+`ADR.md`
+
+The ADR documents two major architectural decisions:
+
+1. Extracting the Reviews functionality into an independent microservice.
+2. Using a Serverless Function for background analytics and metrics processing.
+
+---
+
+# Task 4 — Production Operations
+
+## 4.1 CI/CD Pipeline and Secrets
+
+A CI/CD pipeline was implemented using **GitHub Actions**.
+
+The pipeline performs the following operations:
+
+1. Installs backend dependencies.
+2. Builds the backend.
+3. Installs frontend dependencies.
+4. Builds the frontend.
+5. Deploys the backend to Vercel production.
+6. Deploys the frontend to Vercel production.
+
+Production deployment occurs when changes reach the `main` branch.
+
+### Pipeline Security
+
+Deployment credentials are stored securely using **GitHub Actions Secrets**.
+
+No credentials are hard-coded in the workflow file or exposed in pipeline logs.
+
+### Branch Protection
+
+The `main` branch is protected and requires the **ShopSphere CI/CD Pipeline** check to pass before a pull request can be merged.
+
+---
+
+## 4.2 Structured Logging
+
+The backend uses **Winston** for structured logging.
+
+Log entries are generated in **JSON format** and include:
+
+- Timestamp
+- Severity level
+- Request information
+- Error information
+
+### Request Logging
+
+Incoming requests are logged by backend middleware with information such as:
+
+- HTTP method
+- Request URL
+- Status information
+- Timestamp
+- Severity level
+
+### Error Logging
+
+Backend errors are captured by the Express error-handling middleware and logged with:
+
+- Error message
+- Stack trace
+- Request URL
+- Timestamp
+- Severity level
+
+### Production Log Location
+
+Production logs can be viewed through the deployed backend's **Vercel runtime/deployment logs**.
+
+---
+
+# 4.3 Rollback Plan
+
+The rollback procedure is documented in:
+
+`Rollback-Plan.md`
+
+The rollback plan covers:
+
+1. Detecting a failed production release using production monitoring.
+2. Identifying issues such as health-check failures, error spikes, or latency degradation.
+3. Reverting production to the previous stable version.
+4. Verifying that the restored version is healthy after rollback.
+
+The rollback procedure is designed to restore the previous working release as quickly as possible.
+
+---
+
+# 4.4 Project Sharing
+
+The following project resources are publicly accessible:
+
+### Main Application
+
+[https://fullstack-ecommerce-mohammed-morshe.vercel.app/](https://fullstack-ecommerce-mohammed-morshe.vercel.app/)
+
+### Review Microservice
+
+[https://mohammed-morshedy-shop-sphere-revie.vercel.app/](https://mohammed-morshedy-shop-sphere-revie.vercel.app/)
+
+### GitHub Repository
+
+[https://github.com/Mohammed-git/fullstack-ecommerce-mohammed-morshedy](https://github.com/Mohammed-git/fullstack-ecommerce-mohammed-morshedy)
+
+---
+
+# Final Submission Checklist
+
+- [x] Project naming convention followed.
+- [x] Production application deployed and publicly accessible.
+- [x] Review Microservice deployed and publicly accessible.
+- [x] GitHub repository publicly accessible.
+- [x] Production monitoring configured.
+- [x] CI/CD pipeline implemented using GitHub Actions.
+- [x] CI/CD pipeline successfully completed.
+- [x] `main` branch protected with required CI/CD checks.
+- [x] Structured logging implemented.
+- [x] Production log location documented.
+- [x] Rollback plan documented.
+- [x] Architecture diagram included.
+- [x] Cloud service classification documented.
+- [x] Kubernetes multi-cloud simulation included.
+- [x] Architecture Decision Record included.
+- [x] No secret values are included in the submission document.
+
+---
+
+## Project Status
+
+**ShopSphere Enterprise Production and Cloud Modernization — Complete**
+
+All four project tasks have been implemented and the required deliverables have been prepared for final submission.
 
 # License
 
